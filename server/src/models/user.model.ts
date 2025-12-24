@@ -33,6 +33,7 @@ const userSchema = new  Schema <IDoucument,IModel>({
         minLength:5
     }
 })
+
 userSchema.statics.hashPassword =  async function(password : string) {
 
     if (!password) {
@@ -61,6 +62,16 @@ userSchema.methods.genrateAuthToken =  function ():string {
   return token
   
 }
+userSchema.pre<IDoucument>("save", async function (next) {
+  if (!this.isModified("password")) {
+    return ;
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);
+  ;
+});
+
+
 
 const User = mongoose.model<IDoucument,IModel>('User',userSchema)
 export default  User

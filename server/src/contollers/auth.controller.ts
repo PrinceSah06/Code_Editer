@@ -48,10 +48,14 @@ export const logInUser = asyncHandler(async (req:Request, res:Response)=>{
  if(!user){
   throw new ApiError(404,'User  not found ')
  }
+ console.log('user found : ',user );
 
   const isMatch =  await user.comparePassword(password);
 
   console.log('comparing Password first : ',isMatch );
+  if (!isMatch) {
+    throw new ApiError(401, "Invalid email or password");
+  }
 
   const token = user.genrateAuthToken();
 
@@ -60,4 +64,28 @@ export const logInUser = asyncHandler(async (req:Request, res:Response)=>{
     success:true,
     token
   })
-} )
+} );
+
+export const updateUser = asyncHandler(async (req: any, res: Response) => {
+  // 1. Get data from the body
+  const { username, bio } = req.body;
+
+  // 2. We use the ID from the token (req.user was set by authMiddleware)
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  // 3. Update only what was sent
+  // if (username) user.username = username;
+  // if (bio) user?.bio = bio;
+
+  // 4. Save to DB
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Updated successfully"
+  });
+});
