@@ -81,6 +81,38 @@ const getAllProjects= asyncHandler(async (req:Request,res:Response)=>{
         })
      })
 
+
+
+     const updateUserInfo = asyncHandler (async (req:Request , res:Response)=>{
+        console.log('Update User info Invoked');
+        const projectId = req.params.projectId
+
+        let allowedFields = ['name','language','code'];
+
+        const  updatedFields :any={};
+
+
+        
+        for(let fields of allowedFields){
+            if(req.body[fields]!==undefined){
+                updatedFields[fields]=req.body[fields]
+            }
+        }
+
+        const project = await Project.findByIdAndUpdate(
+    projectId,{$set:updatedFields},{new:true}
+        )
+
+
+        console.log('Updated Fields:',updatedFields);
+
+        res.status(200).json({
+            success:true,
+            message:'Project updated successfully',
+            project
+        })
+
+     })
      export {createProject,getAllProjects
-        ,getOneProject
+        ,getOneProject,updateUserInfo 
      }
