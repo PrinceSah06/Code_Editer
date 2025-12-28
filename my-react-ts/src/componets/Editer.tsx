@@ -12,6 +12,8 @@ type FetchDataType = {
   owners?: string[];
 };
 
+
+
 const EditerCom = () => {
   const [fetchData, setFetchData] = useState<FetchDataType | null>(null);
   const [theme, setTheme] = useState<string>("vs-dark");
@@ -19,6 +21,10 @@ const EditerCom = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const debounceValue = useDebounce(fetchData?.code,1000)
   const [hasTyped, setHasTyped] = useState(false);
+
+type SaveStatus = "idle" | "saving" | "saved" | "error";
+
+const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 
 
   useEffect(() => {
@@ -61,6 +67,7 @@ const EditerCom = () => {
 
   const handleCodeChange = (value: string) => {
     setHasTyped(true)
+    setSaveStatus('saving')
     setFetchData((prev) => {
       if (!prev) return prev;
       return {
@@ -84,7 +91,12 @@ if(!hasTyped) return;
     name: fetchData?.name,
   }).then(() => {
     console.log("Saved (debounced)");
+    setSaveStatus("saved")
+    hideSatus()
   }).catch((error) => {
+
+  setSaveStatus('error')
+   
     console.error("Error saving project data (debounced):", error); 
   })},[  debounceValue,
   projectId,
@@ -95,36 +107,58 @@ if(!hasTyped) return;
     return <div className="text-white p-4">Loading editor...</div>;
   }
 
+  const hideSatus = ()=>{
+    setTimeout(()=>{
+setSaveStatus("idle")
+    },2000)
+
+  }
+
   return (
     <div>
-      <div className="flex bg-black text-green-400 p-4">
-        <h1>Code Editor</h1>
+<div className="flex flex-wrap items-center gap-3 bg-neutral-900 px-4 py-3 text-gray-200">
 
-        <div className="ml-auto flex gap-4">
-          <select
-            onChange={handleThemeChange}
-            className="border rounded px-2 bg-black"
-          >
-            <option value="vs-dark">Dark</option>
-            <option value="vs-light">Light</option>
-          </select>
+  {/* Title + status */}
+  <div className="flex items-center gap-3">
+    <h1 className="text-lg font-semibold text-white">
+      Code Editor
+    </h1>
 
-          <select
-            onChange={handleLanguageChange}
-            className="border rounded px-2 bg-black"
-          >
-            <option value="javascript">JavaScript</option>
-            <option value="typescript">TypeScript</option>
-            <option value="html">HTML</option>
-            <option value="css">CSS</option>
-          </select>
-        </div>
-      </div>
+    <span className="text-sm text-gray-400">
+      {saveStatus === "saving" && "🟡 Saving..."}
+      {saveStatus === "saved" && "🟢 Saved"}
+      {saveStatus === "error" && "🔴 Error"}
+    </span>
+  </div>
+
+  {/* Controls */}
+  <div className="ml-auto flex flex-wrap gap-2">
+    <select
+      onChange={handleThemeChange}
+      className="rounded-md border border-gray-700 bg-neutral-800 px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      <option value="vs-dark">Dark</option>
+      <option value="vs-light">Light</option>
+    </select>
+
+    <select
+      onChange={handleLanguageChange}
+      className="rounded-md border border-gray-700 bg-neutral-800 px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      <option value="javascript">JavaScript</option>
+      <option value="typescript">TypeScript</option>
+      <option value="html">HTML</option>
+      <option value="css">CSS</option>
+    </select>
+  </div>
+</div>
+
 
       <Editor
         height="100vh"
         value={fetchData.code || ""}
-        onChange={(value) => handleCodeChange(value || "")}
+        onChange={(value) =>{ 
+          handleCodeChange(value || "")}}
         language={fetchData.language || "javascript"}
         theme={theme}
         options={{

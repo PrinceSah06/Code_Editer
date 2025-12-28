@@ -16,21 +16,27 @@ const handleProjectClick=(projectId:string)=>{
   navigate(`/editer/${projectId}`);
 }
 
-  return (
-    <div>
-        {list.map((project)=>{
-            return(
-            <div 
-            onClick={()=> handleProjectClick(project._id)}
-            key={project._id} 
-            className='border p-4 m-2 rounded-lg hover:bg-gray-200 cursor-pointer'>
-                {project.name}
-            </div>  
-            )
-        })}
-      
-    </div>
-  )
+return (
+  <div className="space-y-3">
+    {list.map((project) => (
+      <div
+        key={project._id}
+        onClick={() => handleProjectClick(project._id)}
+        className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3
+                   shadow-sm transition hover:shadow-md hover:bg-gray-50 cursor-pointer"
+      >
+        <span className="text-sm font-medium text-gray-800">
+          {project.name}
+        </span>
+
+        <span className="text-xs text-gray-400">
+          Open →
+        </span>
+      </div>
+    ))}
+  </div>
+);
+
 }
 
 export default ProjectList

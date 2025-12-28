@@ -57,59 +57,83 @@ setErrorObj({}); //reset error object"
 
   }
 
-  return (
-    <div className="bg-red-300 relative max-w-md m-20 p-10 rounded-lg flex flex-col justify-center ">
-      <h1 className="text-xl  absolute  top-1  left-20 font-bold mb-4">
-        Login page
+return (
+  <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
+
+      <h1 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+        Login
       </h1>
 
-      <form onSubmit={(e)=>handelChangeSubmit(e)}>
-        <div className="bg-blue-400 p-4 rounded">
-          <label htmlFor="email" className="block mb-1">
+      <form onSubmit={handelChangeSubmit} className="space-y-4">
+
+        {/* Email */}
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
             Email
           </label>
           <input
-            onChange={(e) => handelChange(e)}
-            value={formData.email}
-className={`p-2 mb-3 w-full rounded border focus:ring-2 focus:outline-none
-    ${
-      errorObj.email
-        ? "border-red-500 focus:ring-red-400"
-        : "border-blue-600 focus:ring-blue-800"
-    }
-  `}
-            type="text"
             id="email"
+            type="text"
+            value={formData.email}
+            onChange={handelChange}
+            className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 transition
+              ${
+                errorObj.email
+                  ? "border-red-500 focus:ring-red-400"
+                  : "border-gray-300 focus:ring-blue-500"
+              }
+            `}
           />
+        </div>
 
-          <label htmlFor="password" className="block mb-1">
+        {/* Password */}
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
             Password
           </label>
           <input
-            onChange={(e) => handelChange(e)}
-            value={formData.password}
-           className={`p-2 mb-3 w-full rounded border focus:ring-2 focus:outline-none
-    ${
-      errorObj.password
-        ? "border-red-500 focus:ring-red-400"
-        : "border-blue-600 focus:ring-blue-800"
-    }
-  `}
-            type="password"
             id="password"
+            type="password"
+            value={formData.password}
+            onChange={handelChange}
+            className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 transition
+              ${
+                errorObj.password
+                  ? "border-red-500 focus:ring-red-400"
+                  : "border-gray-300 focus:ring-blue-500"
+              }
+            `}
           />
         </div>
-  {Object.values(errorObj).map((e,i)=> <p className="text-sm text-red-900 " key={i}>{e}</p>)}
-        <button className="p-2 mt-2 border bg-gray-200  rounded-lg px-5">
-          Submit
+
+        {/* Errors */}
+        {Object.values(errorObj).map((e, i) => (
+          <p key={i} className="text-sm text-red-600">
+            {e}
+          </p>
+        ))}
+
+        {/* Button */}
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium
+                     hover:bg-blue-700 transition"
+        >
+          Login
         </button>
       </form>
-      <p>
-        Create account .{" "}
-        <span className="text-blue-900 text-lg font-bold">click here...</span>
+
+      <p className="text-center text-sm text-gray-600 mt-6">
+        Create account{" "}
+        <span className="text-blue-600 font-medium cursor-pointer hover:underline">
+          Click here
+        </span>
       </p>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default LoginForm;

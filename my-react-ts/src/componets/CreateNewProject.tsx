@@ -33,24 +33,49 @@ onClose();
 }
 
 
-  return (
-<form onSubmit={(e)=>CreateNewProjectName(e) }
- className='bg-black w-screen h-screen flex justify-center items-center'>
-         <div className='  rounded-xl bg-gray-400 p-4 m-2 h-100 w-1/5 flex flex-col justify-center items-start'>
-        <h1 className='  text-blue-50 font-bold text-lg  pb-2'>Create New  Project</h1>
-   
-            <input className='p-1  w-88 text-black rounded-xl '
-            value={projectName}
-            onChange={(e)=>handleChange(e)}
-            id='projectName' 
-            type="text" 
-            placeholder='Enter Your Project Name'/>
-        <button  type="submit"
-        className=' border mt-2 border-white p-2 rounded-lg'>Create Project</button>
-     
-</div> </form>
+ return (
+  <form
+    onSubmit={CreateNewProjectName}
+    className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+  >
+    <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-lg">
 
-  )
+      <h1 className="text-lg font-semibold text-gray-800 mb-4">
+        Create New Project
+      </h1>
+
+      <input
+        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-blue-500"
+        value={projectName}
+        onChange={handleChange}
+        id="projectName"
+        type="text"
+        placeholder="Enter project name"
+        required
+      />
+
+      <div className="mt-4 flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={onClose}
+          className="rounded-lg px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
+                     hover:bg-blue-700 transition"
+        >
+          Create
+        </button>
+      </div>
+    </div>
+  </form>
+);
+
 }
 
 export default CreateNewProject
