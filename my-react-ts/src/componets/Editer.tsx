@@ -3,51 +3,23 @@ import { Editor } from "@monaco-editor/react";
 import { useParams } from "react-router-dom";
 import api from "../api/axios";
 import { useDebounce } from "../hooks/useDebounce";
-
-type FetchDataType = {
-  _id: string;
-  name: string;
-  code?: string;
-  language?: string;
-  owners?: string[];
-};
-
-
+import { useProjectDataById } from "../services/getData";
+import EditerHeader from "./EditerHeader";
+import type { SaveStatus } from "../types/project";
 
 const EditerCom = () => {
-  const [fetchData, setFetchData] = useState<FetchDataType | null>(null);
-  const [theme, setTheme] = useState<string>("vs-dark");
-
+  // const [project, setProject] = useState<ProjectType | null>(null);
   const { projectId } = useParams<{ projectId: string }>();
-  const debounceValue = useDebounce(fetchData?.code,1000)
+
+  const [theme, setTheme] = useState<string>("vs-dark");
+  const { project, setProject } = useProjectDataById(projectId || "");
+
+  const debounceValue = useDebounce(project?.code, 1000);
   const [hasTyped, setHasTyped] = useState(false);
 
-type SaveStatus = "idle" | "saving" | "saved" | "error";
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 
-const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
-
-
-  useEffect(() => {
-    if (!projectId) return;
-
-    api
-      .get(`/projects/${projectId}`)
-      .then((response) => {
-        setFetchData(response.data.project);
-      })
-      .catch((error) => {
-        console.error("Error fetching project data:", error);
-      });
-
-
-  
-
-
-  }, [projectId]);
-
-  const handleThemeChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handleThemeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setTheme(event.target.value);
   };
 
@@ -56,7 +28,7 @@ const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   ) => {
     const value = event.target.value;
 
-    setFetchData((prev) => {
+    setProject((prev) => {
       if (!prev) return prev;
       return {
         ...prev,
@@ -65,10 +37,11 @@ const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
     });
   };
 
+
   const handleCodeChange = (value: string) => {
-    setHasTyped(true)
-    setSaveStatus('saving')
-    setFetchData((prev) => {
+    setHasTyped(true);
+    setSaveStatus("saving");
+    setProject((prev) => {
       if (!prev) return prev;
       return {
         ...prev,
@@ -76,90 +49,58 @@ const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
       };
     });
   };
+    const hideStatus = () => {
+    setTimeout(() => {
+      setSaveStatus("idle");
+    }, 2000);
+  };
 
- 
+  useEffect(() => {
+    if (!projectId || !project) return;
+  if (debounceValue === project.code) return;
 
-  useEffect(()=>{
-  if (!projectId || !fetchData) return;
-if (debounceValue === undefined) return;
-if(!hasTyped) return;
+    if (debounceValue === undefined) return;
+    if (!hasTyped) return;
 
+    api
+      .patch(`/projects/${projectId}`, {
+        code: debounceValue,
+        language: project?.language,
+        name: project?.name,
+      })
+      .then(() => {
+        console.log("Saved (debounced)");
+        setSaveStatus("saved");
+        hideStatus();
+      })
+      .catch((error) => {
+        setSaveStatus("error");
 
-    api.patch(`/projects/${projectId}`, {
-    code: debounceValue,
-    language: fetchData?.language,
-    name: fetchData?.name,
-  }).then(() => {
-    console.log("Saved (debounced)");
-    setSaveStatus("saved")
-    hideSatus()
-  }).catch((error) => {
+        console.error("Error saving project data (debounced):", error);
+      });
+  }, [debounceValue,hasTyped, projectId, project?.language, project?.name]);
 
-  setSaveStatus('error')
-   
-    console.error("Error saving project data (debounced):", error); 
-  })},[  debounceValue,
-  projectId,
-  fetchData?.language,
-  fetchData?.name,])
-
-  if (!fetchData) {
+  if (!project) {
     return <div className="text-white p-4">Loading editor...</div>;
   }
 
-  const hideSatus = ()=>{
-    setTimeout(()=>{
-setSaveStatus("idle")
-    },2000)
 
-  }
 
   return (
     <div>
-<div className="flex flex-wrap items-center gap-3 bg-neutral-900 px-4 py-3 text-gray-200">
-
-  {/* Title + status */}
-  <div className="flex items-center gap-3">
-    <h1 className="text-lg font-semibold text-white">
-      Code Editor
-    </h1>
-
-    <span className="text-sm text-gray-400">
-      {saveStatus === "saving" && "🟡 Saving..."}
-      {saveStatus === "saved" && "🟢 Saved"}
-      {saveStatus === "error" && "🔴 Error"}
-    </span>
-  </div>
-
-  {/* Controls */}
-  <div className="ml-auto flex flex-wrap gap-2">
-    <select
-      onChange={handleThemeChange}
-      className="rounded-md border border-gray-700 bg-neutral-800 px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-    >
-      <option value="vs-dark">Dark</option>
-      <option value="vs-light">Light</option>
-    </select>
-
-    <select
-      onChange={handleLanguageChange}
-      className="rounded-md border border-gray-700 bg-neutral-800 px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-    >
-      <option value="javascript">JavaScript</option>
-      <option value="typescript">TypeScript</option>
-      <option value="html">HTML</option>
-      <option value="css">CSS</option>
-    </select>
-  </div>
-</div>
-
+      <EditerHeader
+        handleThemeChange={handleThemeChange}
+        saveStatus={saveStatus}
+        handleLanguageChange={handleLanguageChange}
+      />
 
       <Editor
         height="100vh"
-        value={fetchData.code || ""}
-        onChange={(value) =>{ 
-          handleCodeChange(value || "")}}
-        language={fetchData.language || "javascript"}
+        value={project.code || ""}
+        onChange={(value) => {
+          handleCodeChange(value || "");
+        }}
+        language={project.language || "javascript"}
         theme={theme}
         options={{
           fontSize: 14,
