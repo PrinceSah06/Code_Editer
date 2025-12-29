@@ -18,6 +18,7 @@ const EditerCom = () => {
   const [hasTyped, setHasTyped] = useState(false);
 
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  const [isEditingFileName, setIsEditingFileName] = useState(false);
 
   const handleThemeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setTheme(event.target.value);
@@ -37,7 +38,6 @@ const EditerCom = () => {
     });
   };
 
-
   const handleCodeChange = (value: string) => {
     setHasTyped(true);
     setSaveStatus("saving");
@@ -49,15 +49,30 @@ const EditerCom = () => {
       };
     });
   };
-    const hideStatus = () => {
+  const hideStatus = () => {
     setTimeout(() => {
       setSaveStatus("idle");
     }, 2000);
   };
+  const saveFileName =()=>{
+    if(!projectId|| !project?.name) return ;
+
+    try {
+      api.patch(`/projects/${projectId}`,{name:project.name})
+      
+      setSaveStatus('saved')
+      hideStatus()
+    } catch (error) {
+      setSaveStatus('error')
+      console.error('Failed to remane File',error)
+
+      
+    }
+  }
 
   useEffect(() => {
     if (!projectId || !project) return;
-  if (debounceValue === project.code) return;
+    if (debounceValue === project.code) return;
 
     if (debounceValue === undefined) return;
     if (!hasTyped) return;
@@ -78,17 +93,24 @@ const EditerCom = () => {
 
         console.error("Error saving project data (debounced):", error);
       });
-  }, [debounceValue,hasTyped, projectId, project?.language, project?.name]);
+  }, [debounceValue, hasTyped, projectId, project?.language, project?.name]);
 
   if (!project) {
     return <div className="text-white p-4">Loading editor...</div>;
   }
 
-
-
   return (
     <div>
       <EditerHeader
+        isEditing={isEditingFileName}
+        fileName={project.name}
+        onStartEdit={() => setIsEditingFileName(true)}
+        onFinishEdit={() =>{ setIsEditingFileName(false)
+          saveFileName()}
+        }
+        onFileNameChange={(value) =>
+          setProject((prev) => (prev ? { ...prev, name: value } : prev))
+        }
         handleThemeChange={handleThemeChange}
         saveStatus={saveStatus}
         handleLanguageChange={handleLanguageChange}

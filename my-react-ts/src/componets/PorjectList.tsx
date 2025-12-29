@@ -15,11 +15,14 @@ const handleProjectClick=(projectId:string)=>{
   //navigate to code editor page with projectId
   navigate(`/editer/${projectId}`);
 }
+const EditName=()=>{
+ console.log('dubble clicked')
+}
 
 return (
   <div className="space-y-3">
     {list.map((project) => (
-      <div
+      <div onDoubleClick={EditName}
         key={project._id}
         onClick={() => handleProjectClick(project._id)}
         className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3
