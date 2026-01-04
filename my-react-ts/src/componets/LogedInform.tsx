@@ -126,7 +126,7 @@ return (
 
       <p className="text-center text-sm text-gray-600 mt-6">
         Create account{" "}
-        <span className="text-blue-600 font-medium cursor-pointer hover:underline">
+        <span  onClick={()=> navigate('/Signup')} className="text-blue-600 font-medium cursor-pointer hover:underline">
           Click here
         </span>
       </p>

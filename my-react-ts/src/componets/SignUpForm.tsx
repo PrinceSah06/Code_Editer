@@ -126,7 +126,7 @@ return (
 
       <p className="text-center text-sm text-gray-600 mt-6">
         Don’t have an account?{" "}
-        <span className="text-blue-600 font-medium cursor-pointer hover:underline">
+        <span  onClick={()=> navigate('/login')}   className="text-blue-600 font-medium cursor-pointer hover:underline">
           Sign up
         </span>
       </p>

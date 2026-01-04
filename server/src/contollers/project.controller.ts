@@ -9,7 +9,6 @@ import { Request, Response } from "express";
 
 
 const createProject = asyncHandler(async(req:Request , res:Response)=>{
-    console.log("Create Project Invoked");
  
     const {language,code,name} = req.body;
     const owners = req.user?._id
@@ -33,7 +32,6 @@ const createProject = asyncHandler(async(req:Request , res:Response)=>{
 
 
 const getAllProjects= asyncHandler(async (req:Request,res:Response)=>{
-    console.log("Get All Projects Invoked");
    if (!req.user) throw new ApiError(401, "Unauthorized");
 
     const userId = req.user._id;
@@ -57,7 +55,6 @@ const getAllProjects= asyncHandler(async (req:Request,res:Response)=>{
 
 
      const getOneProject = asyncHandler(async (req:Request , res:Response)=>{
-        console.log("Get One Project Invoked");
        if (!req.user) throw new ApiError(401, "Unauthorized");
   const userId = req.user?._id;
         const projectId = req.params.projectId;
@@ -84,7 +81,6 @@ const getAllProjects= asyncHandler(async (req:Request,res:Response)=>{
 
 
      const updateUserInfo = asyncHandler (async (req:Request , res:Response)=>{
-        console.log('Update User info Invoked');
         const projectId = req.params.projectId
 
         let allowedFields = ['name','language','code'];
@@ -104,7 +100,6 @@ const getAllProjects= asyncHandler(async (req:Request,res:Response)=>{
         )
 
 
-        console.log('Updated Fields:',updatedFields);
 
         res.status(200).json({
             success:true,
@@ -113,6 +108,48 @@ const getAllProjects= asyncHandler(async (req:Request,res:Response)=>{
         })
 
      })
+const AddNewUser = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const { projectId } = req.params;
+    const { userId } = req.body;
+    const currentUserId = req.user.id;
+
+    if (!userId) {
+      return res.status(400).json({ message: "userId is required" });
+    }
+
+    const project = await Project.findOne({
+      _id: projectId,
+      owners: { $in: [currentUserId] }, // ✅ FIX
+    });
+
+    if (!project) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const alreadyAdded = project.owners.some(
+      (id) => id.toString() === userId
+    );
+
+    if (alreadyAdded) {
+      return res.status(400).json({ message: "User already added" });
+    }
+
+    project.owners.push(userId);
+    await project.save();
+
+    res.json({ success: true, message: "User added to project" ,project});
+
+  } catch (error:any) {
+    console.error("AddNewUser crash:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message, // TEMP: show real error
+    });
+  }
+});
+
+
      export {createProject,getAllProjects
-        ,getOneProject,updateUserInfo 
+        ,getOneProject,updateUserInfo ,AddNewUser
      }

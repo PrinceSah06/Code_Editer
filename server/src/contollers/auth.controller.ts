@@ -48,7 +48,6 @@ export const logInUser = asyncHandler(async (req:Request, res:Response)=>{
  if(!user){
   throw new ApiError(404,'User  not found ')
  }
- console.log('user found : ',user );
 
   const isMatch =  await user.comparePassword(password);
 

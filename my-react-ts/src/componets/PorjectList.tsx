@@ -1,5 +1,6 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import UserList from './UserList'
 
 
 type ProjectListProps ={
@@ -9,22 +10,30 @@ type ProjectListProps ={
 }
 const ProjectList = ({list}:ProjectListProps) => {
 const navigate = useNavigate();
+const [id ,setID]= useState('')
+
+
 
 
 const handleProjectClick=(projectId:string)=>{
   //navigate to code editor page with projectId
+  setID(projectId)
+  console.log(id,': Project ID')
   navigate(`/editer/${projectId}`);
 }
 const EditName=()=>{
  console.log('dubble clicked')
 }
 
-return (
+return (<>
+
+
   <div className="space-y-3">
     {list.map((project) => (
       <div onDoubleClick={EditName}
         key={project._id}
-        onClick={() => handleProjectClick(project._id)}
+        onClick={() =>   {setID(project._id)
+          handleProjectClick(project._id)}}
         className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3
                    shadow-sm transition hover:shadow-md hover:bg-gray-50 cursor-pointer"
       >
@@ -37,7 +46,7 @@ return (
         </span>
       </div>
     ))}
-  </div>
+  </div></>
 );
 
 }

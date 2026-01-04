@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  AddNewUser,
   createProject,
   getAllProjects,
   getOneProject,
@@ -14,10 +15,14 @@ router.post("/", authMiddleware, createProject);
 
 // Get all projects of logged-in user
 router.get("/", authMiddleware, getAllProjects);
+router.patch("/:projectId", authMiddleware, updateUserInfo);
+router.get("/:projectId", authMiddleware, getOneProject);
+
+router.patch(
+  "/:projectId/add-user",
+  authMiddleware,AddNewUser)
 
 // Get a single project by ID
-router.get("/:projectId", authMiddleware, getOneProject);
-router.patch("/:projectId", authMiddleware, updateUserInfo);
 
 
 export default router;

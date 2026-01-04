@@ -15,20 +15,14 @@ console.log("Auth Middleware Invoked");
     }
 
 try {
-    console.log("Verifying token:", token);
-    console.log("JWT Secret:", process.env.JWT_SECRET);
     const decoded : any  = jwt.verify(token, process.env.JWT_SECRET as string)
 
-console.log("Token decoded:", decoded);
     const user = await User.findOne({email:decoded?.email})
 
-console.log("User found:", user);
     if(!user){
-        console.log("User not found for token:", token);
         throw new ApiError(401,'Invalid token')
     }
     (req as any).user = user
-    console.log('User authenticated :',user.email)
     next()
 
 } catch (error) {

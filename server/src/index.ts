@@ -5,11 +5,25 @@ import cors from "cors"
 import UserRouter from './routes/auth.routes';
 import ProjectRoutes from './routes/project.route';
 dotenv.config();
-
+import http from 'http'
+import { initSocket } from './socket/socket';
 import { errorHandler } from './middleware/error.middleware';
 const app = express()
 
+const server = http.createServer(app)
+
+initSocket(server)
+
+
+
+server.listen(3000, () => {
+  console.log("✅socket's Server running on port 5000");
+});
+
 const PORT = process.env.PROT || 3000
+
+// const io = initSocket(server);/
+
 
 DB()
 

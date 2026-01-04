@@ -6,6 +6,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { useProjectDataById } from "../services/getData";
 import EditerHeader from "./EditerHeader";
 import type { SaveStatus } from "../types/project";
+import UserList from "./UserList";
 
 const EditerCom = () => {
   // const [project, setProject] = useState<ProjectType | null>(null);
@@ -14,7 +15,7 @@ const EditerCom = () => {
   const [theme, setTheme] = useState<string>("vs-dark");
   const { project, setProject } = useProjectDataById(projectId || "");
 
-  const debounceValue = useDebounce(project?.code, 1000);
+  const debounceValue = useDebounce(project?.code, 2000);
   const [hasTyped, setHasTyped] = useState(false);
 
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
@@ -72,10 +73,8 @@ const EditerCom = () => {
 
   useEffect(() => {
     if (!projectId || !project) return;
-    if (debounceValue === project.code) return;
 
     if (debounceValue === undefined) return;
-    if (!hasTyped) return;
 
     api
       .patch(`/projects/${projectId}`, {
@@ -84,8 +83,10 @@ const EditerCom = () => {
         name: project?.name,
       })
       .then(() => {
+        // console.log('saved code :',debounceValue)
         console.log("Saved (debounced)");
         setSaveStatus("saved");
+         setHasTyped(false); 
         hideStatus();
       })
       .catch((error) => {
@@ -94,6 +95,8 @@ const EditerCom = () => {
         console.error("Error saving project data (debounced):", error);
       });
   }, [debounceValue, hasTyped, projectId, project?.language, project?.name]);
+
+
 
   if (!project) {
     return <div className="text-white p-4">Loading editor...</div>;
@@ -130,7 +133,12 @@ const EditerCom = () => {
           lineNumbers: "on",
           tabSize: 2,
         }}
+
+
+
       />
+
+      <UserList  ></UserList>
     </div>
   );
 };
