@@ -1,82 +1,40 @@
-# 🧑‍💻 Code Editor Web Application
+﻿# Code_Editer
 
-A real-world **code editor web application** built using **React, TypeScript, and MERN stack concepts**.  
-The project focuses on **performance optimization, clean UI, and production-ready patterns**.
+Code Editer project focused on Express with a stack that includes Express, MongoDB, React, Socket.IO.
 
----
+## Tech Stack
 
-## 🚀 Features
-
-- ✨ Code editor powered by Monaco Editor  
-- 💾 Auto-save functionality with debounce  
-- ⏱️ Saves code only after user stops typing  
-- 🟡🟢🔴 Real-time save status indicators (Saving / Saved / Error)  
-- 🎨 Clean, modern, and fully responsive UI  
-- 📂 Project list and project creation flow  
-- 🔐 Authentication (Login / Register)
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-- React
-- TypeScript
-- Tailwind CSS
-- Monaco Editor
-- Axios
-
-### Backend (API)
-- Node.js
 - Express
 - MongoDB
-- REST APIs
+- React
+- Socket.IO
+- Tailwind CSS
+- TypeScript
+- Vite
 
----
+## Project Structure
 
-## 🧠 Auto-Save Feature (Core Highlight)
+- `my-react-ts/`
+- `server/`
 
-The editor implements **auto-save using a debounce mechanism** to improve performance.
+## Packages And Scripts
 
-### How it works:
-1. Project data is fetched when the editor loads.
-2. User edits code in the editor.
-3. A custom debounce hook waits until typing stops.
-4. After the delay, a `PATCH` request saves only the updated fields.
-5. UI shows save status in real time.
+- `Code_Editer` at `Code_Editer`
+  No npm scripts were detected in this package.
+- `my-react-ts` at `Code_Editer\my-react-ts`
+  Available scripts: build, dev, lint, preview.
+- `server` at `Code_Editer\server`
+  Available scripts: dev, test.
 
-### Why debounce?
-- Prevents API calls on every keystroke
-- Reduces server load
-- Improves user experience
+## Getting Started
 
----
+1. Install dependencies in the package you want to run.
+2. Create a local `.env` from any generated `.env.example` file.
+3. Run the main development script for that package.
 
-## 🟡 Save Status Indicator
+## Maintenance Notes
 
-The editor provides visual feedback to users:
-
-| Status | Meaning |
-|------|--------|
-| 🟡 Saving… | Code is being saved |
-| 🟢 Saved | Code saved successfully |
-| 🔴 Error | Failed to save code |
-
----
-
-## 🔗 API Design
-
-Uses **PATCH** instead of PUT for partial updates.
-
-**Endpoint**
-
-
-
-**Payload Example**
-```json
-{
-  "code": "...",
-  "language": "javascript",
-  "name": "My Project"
-}
+- Generated folders such as `node_modules/`, `dist/`, and `.next/` should stay untracked.
+- Secrets should stay in local `.env` files and never be committed.
+- Update this README when the project purpose or setup changes.
 
