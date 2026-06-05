@@ -1,6 +1,6 @@
 import mongoose,{Schema} from "mongoose";
 
-interface IProject{
+interface IProject extends mongoose.Document {
     name:string
     owners:mongoose.Types.ObjectId[];
     language:string;

@@ -110,17 +110,19 @@ const getAllProjects= asyncHandler(async (req:Request,res:Response)=>{
      })
 const AddNewUser = asyncHandler(async (req: Request, res: Response) => {
   try {
+    if (!req.user) throw new ApiError(401, "Unauthorized");
+
     const { projectId } = req.params;
     const { userId } = req.body;
-    const currentUserId = req.user.id;
+    const currentUserId = req.user._id;
 
-    if (!userId) {
-      return res.status(400).json({ message: "userId is required" });
+    if (!projectId || !userId) {
+      return res.status(400).json({ message: "projectId and userId are required" });
     }
 
     const project = await Project.findOne({
       _id: projectId,
-      owners: { $in: [currentUserId] }, // ✅ FIX
+      owners: currentUserId, // Solves the $in query overload
     });
 
     if (!project) {
@@ -136,7 +138,7 @@ const AddNewUser = asyncHandler(async (req: Request, res: Response) => {
     }
 
     project.owners.push(userId);
-    await project.save();
+    await project.save(); // Should work now with the IProject update
 
     res.json({ success: true, message: "User added to project" ,project});
 
