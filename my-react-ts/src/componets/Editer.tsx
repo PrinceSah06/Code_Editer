@@ -7,6 +7,7 @@ import { useProjectDataById } from "../services/getData";
 import EditerHeader from "./EditerHeader";
 import type { SaveStatus } from "../types/project";
 import UserList from "./UserList";
+import socket from "../socket";
 
 const EditerCom = () => {
   // const [project, setProject] = useState<ProjectType | null>(null);
@@ -94,7 +95,21 @@ const EditerCom = () => {
 
         console.error("Error saving project data (debounced):", error);
       });
-  }, [debounceValue, hasTyped, projectId, project?.language, project?.name]);
+  }, [debounceValue, hasTyped, projectId, project?.language, project?.name]);  
+  
+  useEffect(() => {
+    const handleSyncCode = (code: string) => {
+      setProject((prev) => {
+        if (!prev) return prev;
+        return { ...prev, code };
+      });
+    };
+
+    socket.on("sync-code", handleSyncCode);
+    return () => {
+      socket.off("sync-code", handleSyncCode);
+    };
+  }, []);
 
 
 

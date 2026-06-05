@@ -1,8 +1,9 @@
 import axios,{ type AxiosInstance}from 'axios';
 
 
+const rawBaseURL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 const api:AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL
+    baseURL: rawBaseURL.endsWith('/api/v1') ? rawBaseURL : `${rawBaseURL}/api/v1`
 })
 
 
