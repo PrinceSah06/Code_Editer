@@ -15,11 +15,6 @@ const server = http.createServer(app)
 initSocket(server)
 
 
-
-server.listen(3000, () => {
-  console.log("✅socket's Server running on port 5000");
-});
-
 const PORT = process.env.PORT || 3000
 
 DB()
