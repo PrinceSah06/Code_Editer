@@ -17,7 +17,12 @@ const createProject = asyncHandler(async(req:Request , res:Response)=>{
         throw new ApiError(400,'Please provide all required fields');
     }
 
-    const project = await Project.create({language,code,name,owners:[owners]})
+    const project = await Project.create({
+        name,
+        owners: [owners],
+        ...(language && { language }),
+        ...(code && { code })
+    })
 
     if(!project){
         throw new ApiError(500,'failed to create project');
