@@ -5,7 +5,7 @@ import { Project } from "../models/project.model";
 export   const initSocket = (server: http.Server) => {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:5173", // ✅ FIXED
+      origin: process.env.FRONTEND_URL, // ✅ FIXED
       credentials: true,
     },
   });
