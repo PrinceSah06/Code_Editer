@@ -1,10 +1,11 @@
 
 import './App.css'
-import { Routes,Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import SignUp from './pages/SignUp';
 import CodeEditer from './pages/CodeEditer';
+import { ProtectedRoute, PublicRoute } from './componets/RouteGuard';
 
 
 function App() {
@@ -13,11 +14,11 @@ function App() {
   return ( <> 
 
   <Routes>
-  <Route path='/' element={<Home/>} />
-     <Route path='/login' element={<div><Login/></div>} />
-  <Route path='/signup' element={<SignUp/>} />
-  <Route path='/editer/:projectId' element={<CodeEditer/>} />
-   </Routes>
+    <Route path='/' element={<ProtectedRoute><Home/></ProtectedRoute>} />
+    <Route path='/login' element={<PublicRoute><div><Login/></div></PublicRoute>} />
+    <Route path='/signup' element={<PublicRoute><SignUp/></PublicRoute>} />
+    <Route path='/editer/:projectId' element={<ProtectedRoute><CodeEditer/></ProtectedRoute>} />
+  </Routes>
 
   </>
   )

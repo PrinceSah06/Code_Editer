@@ -2,11 +2,13 @@ import React, { useEffect } from 'react'
 import CreateNewProject from '../componets/CreateNewProject'
 import ProjectList from '../componets/PorjectList';
 import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
   const [showCreateProject, setShowCreateProject] = React.useState(false);
   const [list, setList] = React.useState<Array<{ _id: string, name: string }>>([]);
   const [loading, setLoading] = React.useState(true);
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     setLoading(true);
@@ -24,7 +26,38 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
+    <div className="min-h-screen bg-slate-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] text-slate-200">
+      {/* Navbar */}
+      <header className="border-b border-slate-900 bg-slate-950/50 backdrop-blur-md sticky top-0 z-40">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+            </div>
+            <span className="font-bold text-xl tracking-tight text-white">CoEdit</span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {user && (
+              <span className="hidden sm:inline-block text-sm text-slate-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+                {user.email}
+              </span>
+            )}
+            <button
+              onClick={logout}
+              className="px-4 py-2 text-sm font-semibold text-slate-350 hover:text-white bg-slate-900 hover:bg-slate-800 rounded-xl border border-slate-800 hover:border-slate-700 transition-all duration-300 flex items-center gap-2"
+            >
+              <svg className="w-4 h-4 text-slate-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
       <div className="max-w-5xl mx-auto px-6 py-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
           <div>
