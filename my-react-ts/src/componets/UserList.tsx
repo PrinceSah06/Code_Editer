@@ -1,10 +1,10 @@
-import React,{useState,useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useParams } from 'react-router-dom';
 
 const UserList = () => {
-const [users, setUsers] = useState([]);
-const [loading, setLoading] = useState(false);
+const [users, setUsers] = useState<Array<{_id: string, email: string}>>([]);
+
 const {projectId} = useParams()
 console.log({projectId})
  
@@ -23,12 +23,11 @@ console.log('user added :' ,res)
 
 
 useEffect(() => {
-  setLoading(true);
+
   api.get("/users")
 
     .then((res) =>{console.log(res.data)
-         setUsers(res.data)})
-    .finally(() => setLoading(false));
+         setUsers(res.data)});
 }, []);
 
     

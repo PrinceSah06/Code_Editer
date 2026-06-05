@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Editer from "../componets/Editer";
 import { useParams, useNavigate } from "react-router-dom";
 import socket from "../socket";
 
 const CodeEditer = () => {
-  const [code, setCode] = useState("");
   const { projectId } = useParams();
   const navigate = useNavigate();
 
@@ -67,7 +66,7 @@ const CodeEditer = () => {
       <main className="flex-1 overflow-hidden relative">
         <div className="absolute inset-0">
           {/* Assuming Editer handles its own full width/height properly */}
-          <Editer value={code} onchange={setCode} />
+          <Editer />
         </div>
       </main>
     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 interface header {
   handleThemeChange(event: React.ChangeEvent<HTMLSelectElement>): void;
