@@ -20,14 +20,9 @@ server.listen(3000, () => {
   console.log("✅socket's Server running on port 5000");
 });
 
-const PORT = process.env.PROT || 3000
-
-// const io = initSocket(server);/
-
+const PORT = process.env.PORT || 3000
 
 DB()
-
-
 
 app.use(cors());
 app.use(express.json());
@@ -40,6 +35,8 @@ app.use(errorHandler);
 app.post('/',(req ,res)=>{
     res.send('this is a basic route')
 })
-app.listen(PORT,()=>{
-    console.log('server is running on port 3000')
+
+// Use the http server to listen, which handles both Express app and Socket.io
+server.listen(PORT,()=>{
+    console.log(`Server is running on port ${PORT}`)
 })
